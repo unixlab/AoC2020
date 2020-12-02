@@ -13,6 +13,7 @@ func Run() {
 	scanner := bufio.NewScanner(file)
 
 	validCounterPart1 := 0
+	validCounterPart2 := 0
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -28,7 +29,13 @@ func Run() {
 			validCounterPart1++
 		}
 
+		minPosPass := password[min-1 : min]
+		maxPosPass := password[max-1 : max]
+		if (minPosPass == char && maxPosPass != char) || (minPosPass != char && maxPosPass == char) {
+			validCounterPart2++
+		}
 	}
 
 	fmt.Printf("part 1 => %d\n", validCounterPart1)
+	fmt.Printf("part 2 => %d\n", validCounterPart2)
 }
