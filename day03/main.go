@@ -8,7 +8,12 @@ import (
 )
 
 func RunP1() {
-	fmt.Println(Slope(3, 1))
+	fmt.Printf("part 1 => %d\n", Slope(3, 1))
+}
+
+func RunP2() {
+	sum := Slope(1, 1) * Slope(3, 1) * Slope(5, 1) * Slope(7, 1) * Slope(1, 2)
+	fmt.Printf("part 2 => %d\n", sum)
 }
 
 func Slope(right int, down int) int {
