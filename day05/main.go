@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 )
 
 type Partition struct {
@@ -28,6 +29,7 @@ func Run() {
 	scanner := bufio.NewScanner(file)
 
 	var maxSeatId int
+	var allPart2Seats []int
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -51,6 +53,15 @@ func Run() {
 		if seatId > maxSeatId {
 			maxSeatId = seatId
 		}
+
+		allPart2Seats = append(allPart2Seats, seatId)
 	}
 	fmt.Printf("part 1 => %d\n", maxSeatId)
+
+	sort.Ints(allPart2Seats)
+	for i := 0; i < len(allPart2Seats)-1; i++ {
+		if allPart2Seats[i+1]-allPart2Seats[i] > 1 {
+			fmt.Printf("part 2 => %d\n", allPart2Seats[i]+1)
+		}
+	}
 }
