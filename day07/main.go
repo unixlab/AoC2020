@@ -5,10 +5,16 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
-func getShinyGold(bags map[string][]string, bag string) bool {
+type Bag struct {
+	Name   string
+	Number int
+}
+
+func getShinyGold(bags map[string][]Bag, bag string) bool {
 	if len(bags[bag]) == 0 {
 		return false
 	}
@@ -16,11 +22,20 @@ func getShinyGold(bags map[string][]string, bag string) bool {
 		return true
 	}
 	for _, nextBag := range bags[bag] {
-		if getShinyGold(bags, nextBag) {
+		if getShinyGold(bags, nextBag.Name) {
 			return true
 		}
 	}
 	return false
+}
+
+func getBagChain(bags map[string][]Bag, bag string) int {
+	var sum int
+	for _, curBag := range bags[bag] {
+		sum += curBag.Number
+		sum += curBag.Number * getBagChain(bags, curBag.Name)
+	}
+	return sum
 }
 
 func Run() {
@@ -29,7 +44,7 @@ func Run() {
 
 	bagRegex, _ := regexp.Compile("([0-9]+ [A-Za-z]+ [A-Za-z]+ bag[s]?)")
 
-	bags := make(map[string][]string, 1000)
+	bags := make(map[string][]Bag, 1000)
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -37,13 +52,16 @@ func Run() {
 		bag := strings.Join(strings.Split(line, " ")[0:2], "_")
 		bagRegexRes := bagRegex.FindAllStringSubmatch(line, -1)
 
-		var inside []string
+		var newBags []Bag
 
 		for _, bagInside := range bagRegexRes {
-			inside = append(inside, strings.Join(strings.Split(bagInside[0], " ")[1:3], "_"))
+			var newBag Bag
+			newBag.Name = strings.Join(strings.Split(bagInside[0], " ")[1:3], "_")
+			newBag.Number, _ = strconv.Atoi(strings.Split(bagInside[0], " ")[0])
+			newBags = append(newBags, newBag)
 		}
 
-		bags[bag] = inside
+		bags[bag] = newBags
 	}
 
 	bagCounter := 0
@@ -57,4 +75,5 @@ func Run() {
 	}
 
 	fmt.Printf("part 1 => %d\n", bagCounter)
+	fmt.Printf("part 2 => %d\n", getBagChain(bags, "shiny_gold"))
 }
