@@ -43,7 +43,7 @@ func Run() {
 
 	offset := 0
 	accumulator := 0
-	for {
+	for offset < len(instructions) {
 		instructionCounter[offset]++
 		if !countAllZero(instructionCounter) {
 			break
@@ -59,5 +59,39 @@ func Run() {
 		}
 	}
 
-	fmt.Println(accumulator)
+	fmt.Printf("part 1 => %d\n", accumulator)
+
+	for key, inst := range instructions {
+		offset = 0
+		accumulator = 0
+		instructionCounter = make([]int, len(instructions))
+		orgInst := inst
+		switch inst.Command {
+		case "nop":
+			instructions[key].Command = "jmp"
+		case "acc":
+			continue
+		case "jmp":
+			instructions[key].Command = "nop"
+		}
+		for offset < len(instructions) {
+			instructionCounter[offset]++
+			if !countAllZero(instructionCounter) {
+				break
+			}
+			switch instructions[offset].Command {
+			case "nop":
+				offset++
+			case "acc":
+				accumulator += instructions[offset].Value
+				offset++
+			case "jmp":
+				offset += instructions[offset].Value
+			}
+		}
+		if offset >= len(instructions) {
+			fmt.Printf("part 2 => %d\n", accumulator)
+		}
+		instructions[key].Command = orgInst.Command
+	}
 }
