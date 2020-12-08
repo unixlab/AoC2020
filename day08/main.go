@@ -1,0 +1,63 @@
+package day08
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+type Instruction struct {
+	Command string
+	Value   int
+}
+
+func countAllZero(counter []int) bool {
+	for _, c := range counter {
+		if c > 1 {
+			return false
+		}
+	}
+	return true
+}
+
+func Run() {
+	file, _ := os.Open("day08/input.txt")
+	scanner := bufio.NewScanner(file)
+
+	var instructions []Instruction
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		splitRes := strings.Split(line, " ")
+
+		var newInstruction Instruction
+		newInstruction.Command = splitRes[0]
+		newInstruction.Value, _ = strconv.Atoi(splitRes[1])
+
+		instructions = append(instructions, newInstruction)
+	}
+
+	instructionCounter := make([]int, len(instructions))
+
+	offset := 0
+	accumulator := 0
+	for {
+		instructionCounter[offset]++
+		if !countAllZero(instructionCounter) {
+			break
+		}
+		switch instructions[offset].Command {
+		case "nop":
+			offset++
+		case "acc":
+			accumulator += instructions[offset].Value
+			offset++
+		case "jmp":
+			offset += instructions[offset].Value
+		}
+	}
+
+	fmt.Println(accumulator)
+}
