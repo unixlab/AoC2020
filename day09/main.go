@@ -49,4 +49,29 @@ func Run() {
 	}
 
 	fmt.Printf("part 1 => %d\n", resultPart1)
+
+	for i := 0; i < len(numbers); i++ {
+		var part2Numbers []int
+		var sum int
+		offset := i
+		for sum < resultPart1 && offset < len(numbers) {
+			part2Numbers = append(part2Numbers, numbers[offset])
+			sum += numbers[offset]
+			offset++
+		}
+		if sum == resultPart1 {
+			min := -1
+			max := 0
+			for _, number := range part2Numbers {
+				if number > max {
+					max = number
+				}
+				if number < min || min == -1 {
+					min = number
+				}
+			}
+			fmt.Printf("part 2 => %d\n", min+max)
+			break
+		}
+	}
 }
