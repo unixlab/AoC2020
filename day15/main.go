@@ -13,25 +13,30 @@ func Run() {
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
-		var numbersSpoken [2021]int
+		var last int
+		lastSpoken := make(map[int]int, 1000)
 
-		var maxK int
 		for k, v := range strings.Split(scanner.Text(), ",") {
-			numbersSpoken[k], _ = strconv.Atoi(v)
-			maxK = k
+			last, _ = strconv.Atoi(v)
+			lastSpoken[last] = k
 		}
 
-		for i := maxK; i < 2020; i++ {
-			numberToSpeak := 0
-			for j := i - 1; j >= 0; j-- {
-				if numbersSpoken[j] == numbersSpoken[i] {
-					numberToSpeak = i - j
-					break
-				}
+		last = 0
+
+		for i := len(lastSpoken); i < 30e6; i++ {
+			pos, ok := lastSpoken[last]
+			lastSpoken[last] = i
+			if ok {
+				last = i - pos
+			} else {
+				last = 0
 			}
-			numbersSpoken[i+1] = numberToSpeak
+			if i == 2018 {
+				fmt.Printf("part 1 => %d\n", last)
+			}
+			if i == 29999998 {
+				fmt.Printf("part 1 => %d\n", last)
+			}
 		}
-
-		fmt.Println(numbersSpoken[2019])
 	}
 }
